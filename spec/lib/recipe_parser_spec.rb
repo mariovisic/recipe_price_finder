@@ -1,16 +1,16 @@
 require 'spec_helper'
-require File.dirname(__FILE__) + '/../../lib/recipie_parser'
+require File.dirname(__FILE__) + '/../../lib/recipe_parser'
 
-RSpec.describe RecipieParser do
-  let(:recipe_html_file) { File.read(File.dirname(__FILE__) + '/../support/example_recipie_webpages/bbc_good_food_chickpea_curry.html') }
+RSpec.describe RecipeParser do
+  let(:recipe_html_file) { File.read(File.dirname(__FILE__) + '/../support/example_recipe_webpages/bbc_good_food_chickpea_curry.html') }
 
   describe '.parse' do
-    it 'returns a Recipie object' do
-      expect(RecipieParser.parse(recipe_html_file)).to be_a(Recipe)
+    it 'returns a Recipe object' do
+      expect(RecipeParser.parse(recipe_html_file)).to be_a(Recipe)
     end
 
-    it 'correctly sets the number of ingredients on the recipie' do
-      expect(RecipieParser.parse(recipe_html_file).ingredient_items.count).to eq(12)
+    it 'correctly sets the number of ingredients on the recipe' do
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items.count).to eq(12)
     end
   end
 end

@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
 require 'net/http'
-require File.dirname(__FILE__) + '/../lib/recipie_parser'
+require File.dirname(__FILE__) + '/../lib/recipe_parser'
 
-recipe = RecipieParser.parse(Net::HTTP.get(URI(ARGV[0])))
+recipe = RecipeParser.parse(Net::HTTP.get(URI(ARGV[0])))
 
 
 recipe.ingredient_items.each do |ingredient_item|

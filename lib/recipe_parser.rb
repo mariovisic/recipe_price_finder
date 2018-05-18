@@ -35,7 +35,7 @@ UNITS = {
   }
 }
 
-class RecipieParser
+class RecipeParser
   def self.parse(file)
     file.respond_to?(:read) ? new(file.read).parse : new(file).parse
   end
@@ -46,12 +46,12 @@ class RecipieParser
   private_class_method :new
 
   def parse
-    Recipe.new(ingredient_items: []).tap do |recipie|
+    Recipe.new(ingredient_items: []).tap do |recipe|
       ingredient_elements.each do |ingredient_element|
-        recipie.ingredient_items.push(IngredientItemParser.parse(ingredient_element))
+        recipe.ingredient_items.push(IngredientItemParser.parse(ingredient_element))
       end
 
-      recipie.ingredient_items.compact!
+      recipe.ingredient_items.compact!
     end
   end
 
