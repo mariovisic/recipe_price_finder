@@ -54,35 +54,41 @@ class IngredientItemParser
   private
 
   def name
-    if quantity_string
-      line_with_quantity.sub(quantity_string, '').strip.capitalize
-    end
+    name_match
   end
 
   def quantity
-    if quantity_string
-      quantity_string.split(' ').first.to_i
-    end
+    quantity_match && quantity_match[:quantity]
   end
 
   def quantity_unit
-    if quantity_string
-      quantity_string.split(' ').last
-    end
+    quantity_match && quantity_match[:unit]
   end
 
+  def lines
+    @lines ||= @html_element.children.map(&:text).join("\n").lines
+  end
 
-  def quantity_string
-    @quantity ||= begin
-      if (@html_element.text.match /\d tbsp/i)
-        @html_element.text.match(/\d tbsp/i)[0]
+  def name_match
+    if quantity_match
+      @name_match ||= begin
+        quantity_line_with_quantity_removed = lines[quantity_match[:index]].gsub(quantity_match[:match], '').strip
+        if !quantity_line_with_quantity_removed.empty?
+          quantity_line_with_quantity_removed.capitalize
+        else
+          lines[quantity_match[:index] + 1].capitalize
+        end
       end
     end
   end
 
-  def line_with_quantity
-    @html_element.text.split("\n").detect do |line|
-      line.match?(/\d tbsp/i)
+  def quantity_match
+    @quantity_match ||= lines.each_with_index do |line, index|
+      if match = line.match(/(\d) (tbsp)/i)
+        return { match: match[0], quantity: match[1].to_i, unit: match[2], index: index }
+      end
     end
+
+    nil
   end
 end
