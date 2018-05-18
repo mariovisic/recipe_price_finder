@@ -78,7 +78,7 @@ class IngredientItemParser
 
   def parse
     if quantity_match && name_match
-      IngredientItem.new(element: @html_element, quantity: quantity, quantity_unit: quantity_unit, name: name_match)
+      IngredientItem.new(name: name_match, quantity: quantity, quantity_unit: quantity_unit)
     end
   end
 
@@ -101,13 +101,13 @@ class IngredientItemParser
       @name_match ||= begin
         quantity_line_with_quantity_removed = lines[quantity_match[:index]].gsub(quantity_match[:match], '').strip
         if quantity_line_with_quantity_removed.match(/[a-z]+/i)
-          quantity_line_with_quantity_removed.capitalize
+          quantity_line_with_quantity_removed.strip.capitalize
         else
           name_line = lines[quantity_match[:index] + 1, lines.length - 1].detect do |line|
             line.match(/[a-z]+/i)
           end
 
-          name_line&.capitalize
+          name_line&.strip&.capitalize
         end
       end
     end

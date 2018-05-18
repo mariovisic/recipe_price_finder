@@ -12,6 +12,21 @@ RSpec.describe RecipeParser do
     it 'correctly sets the number of ingredients on the recipe' do
       expect(RecipeParser.parse(recipe_html_file).ingredient_items.count).to eq(12)
     end
+
+    it 'correctly extracts the ingredient items' do
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items).to include(IngredientItem.new(name: 'Olive oil', quantity: 1, quantity_unit: :table_spoon))
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items).to include(IngredientItem.new(name: 'Onions', quantity: 2, quantity_unit: :none))
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items).to include(IngredientItem.new(name: 'Garlic cloves', quantity: 2, quantity_unit: :none))
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items).to include(IngredientItem.new(name: 'Garam masala', quantity: 1, quantity_unit: :tea_spoon))
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items).to include(IngredientItem.new(name: 'Turmeric', quantity: 1, quantity_unit: :tea_spoon))
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items).to include(IngredientItem.new(name: 'Coriander', quantity: 1, quantity_unit: :tea_spoon))
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items).to include(IngredientItem.new(name: 'Plum tomatoes', quantity: 400, quantity_unit: :grams))
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items).to include(IngredientItem.new(name: 'Coconut milk', quantity: 400, quantity_unit: :millilitres))
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items).to include(IngredientItem.new(name: 'Chickpeas', quantity: 400, quantity_unit: :grams))
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items).to include(IngredientItem.new(name: 'Tomato', quantity: 2, quantity_unit: :none))
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items).to include(IngredientItem.new(name: 'Coriander', quantity: 1, quantity_unit: :none))
+      expect(RecipeParser.parse(recipe_html_file).ingredient_items).to include(IngredientItem.new(name: 'Basmati rice', quantity: 1, quantity_unit: :none))
+    end
   end
 end
 
