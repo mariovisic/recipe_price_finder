@@ -100,10 +100,14 @@ class IngredientItemParser
     if quantity_match
       @name_match ||= begin
         quantity_line_with_quantity_removed = lines[quantity_match[:index]].gsub(quantity_match[:match], '').strip
-        if !quantity_line_with_quantity_removed.empty?
+        if quantity_line_with_quantity_removed.match(/[a-z]+/i)
           quantity_line_with_quantity_removed.capitalize
         else
-          lines[quantity_match[:index] + 1].capitalize
+          name_line = lines[quantity_match[:index] + 1, lines.length - 1].detect do |line|
+            line.match(/[a-z]+/i)
+          end
+
+          name_line&.capitalize
         end
       end
     end
