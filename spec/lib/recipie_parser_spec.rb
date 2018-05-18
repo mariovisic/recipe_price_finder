@@ -30,7 +30,7 @@ RSpec.describe IngredientItemParser do
 
     it 'correctly extracts the quantity of the ingredients' do
       expect(IngredientItemParser.parse(Nokogiri::XML::Document.parse(html)).quantity).to eq(1)
-      expect(IngredientItemParser.parse(Nokogiri::XML::Document.parse(html)).quantity_unit).to eq(IngredientItem::TABLE_SPOON)
+      expect(IngredientItemParser.parse(Nokogiri::XML::Document.parse(html)).quantity_unit).to eq(:table_spoon)
     end
 
     it 'correctly extracts the name of the ingredients' do

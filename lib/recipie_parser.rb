@@ -5,13 +5,35 @@ class Recipe < OpenStruct
 end
 
 class IngredientItem < OpenStruct
-  TABLE_SPOON = 'tbsp'
-
   def to_s
-    "#{quantity} #{quantity_unit} of #{name}"
+    if quantity_unit
+      "#{UNITS[quantity_unit][:to_s] % quantity} #{name}"
+    end
   end
 end
 
+UNITS = {
+  :table_spoon => {
+    regexp: /(\d+)\s*tbsp\s/i,
+    to_s: "%s tbsp"
+  },
+  :tea_spoon => {
+    regexp: /(\d+)\s*tsp\s/i,
+    to_s: "%s tsp"
+  },
+  :grams => {
+    regexp: /(\d+)\s*g\s/,
+    to_s: "%sg"
+  },
+  :millilitres => {
+    regexp: /(\d+)\s*ml\s/,
+    to_s: "%sml"
+  },
+  :none => {
+    regexp: /(\d+)/,
+    to_s: "%s x"
+  }
+}
 
 class RecipieParser
   def self.parse(file)
@@ -84,11 +106,12 @@ class IngredientItemParser
 
   def quantity_match
     @quantity_match ||= lines.each_with_index do |line, index|
-      if match = line.match(/(\d) (tbsp)/i)
-        return { match: match[0], quantity: match[1].to_i, unit: match[2], index: index }
+      UNITS.each do |unit, unit_info|
+        if match = line.match(unit_info[:regexp])
+          return { match: match[0], quantity: match[1].to_i, unit: unit, index: index }
+        end
       end
     end
-
     nil
   end
 end
