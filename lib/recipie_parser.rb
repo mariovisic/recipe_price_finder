@@ -14,19 +14,19 @@ end
 
 UNITS = {
   :table_spoon => {
-    regexp: /(\d+)\s*tbsp\s/i,
+    regexp: /(\d+)\s*(tbsp|table\s?spoon)s?\s/i,
     to_s: "%s tbsp"
   },
   :tea_spoon => {
-    regexp: /(\d+)\s*tsp\s/i,
+    regexp: /(\d+)\s*(tsp|tea\s?spoon)s?\s/i,
     to_s: "%s tsp"
   },
   :grams => {
-    regexp: /(\d+)\s*g\s/,
+    regexp: /(\d+)\s*(g|gram)s?\s/,
     to_s: "%sg"
   },
   :millilitres => {
-    regexp: /(\d+)\s*ml\s/,
+    regexp: /(\d+)\s*(ml|mils|milli\slitre)s?\s/,
     to_s: "%sml"
   },
   :none => {
@@ -46,17 +46,24 @@ class RecipieParser
   private_class_method :new
 
   def parse
-    rec = Recipe.new(ingredient_items: []).tap do |recipie|
+    Recipe.new(ingredient_items: []).tap do |recipie|
       ingredient_elements.each do |ingredient_element|
         recipie.ingredient_items.push(IngredientItemParser.parse(ingredient_element))
       end
+
+      recipie.ingredient_items.compact!
     end
   end
 
   private
 
   def ingredient_elements
-    @document.xpath('//li[contains(@class, "ingredient")]')
+    foo = @document.css('li[class*="ingredient"]')
+    if foo.length > 0
+      foo
+    else
+      @document.css('li [class*="ingredient"]')
+    end
   end
 end
 
@@ -70,14 +77,12 @@ class IngredientItemParser
   end
 
   def parse
-    IngredientItem.new(element: @html_element, quantity: quantity, quantity_unit: quantity_unit, name: name)
+    if quantity_match && name_match
+      IngredientItem.new(element: @html_element, quantity: quantity, quantity_unit: quantity_unit, name: name_match)
+    end
   end
 
   private
-
-  def name
-    name_match
-  end
 
   def quantity
     quantity_match && quantity_match[:quantity]

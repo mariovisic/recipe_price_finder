@@ -6,4 +6,7 @@ require File.dirname(__FILE__) + '/../lib/recipie_parser'
 recipe = RecipieParser.parse(Net::HTTP.get(URI(ARGV[0])))
 
 
-recipe.ingredient_items.each { | ingredient_item| puts ingredient_item.to_s }
+recipe.ingredient_items.each do |ingredient_item|
+  puts "==="
+  puts ingredient_item.to_s
+end
