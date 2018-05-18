@@ -30,7 +30,7 @@ UNITS = {
     to_s: "%sml"
   },
   :none => {
-    regexp: /(\d+)/,
+    regexp: /(\d*)/,
     to_s: "%s x"
   }
 }
@@ -117,7 +117,8 @@ class IngredientItemParser
     @quantity_match ||= lines.each_with_index do |line, index|
       UNITS.each do |unit, unit_info|
         if match = line.match(unit_info[:regexp])
-          return { match: match[0], quantity: match[1].to_i, unit: unit, index: index }
+          quantity = (match[1].empty? ? 1 : match[1]).to_i
+          return { match: match[0], quantity: quantity, unit: unit, index: index }
         end
       end
     end
